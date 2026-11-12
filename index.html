@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elvin // Digital Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #09090b;
+      --bg-card: rgba(24, 24, 27, 0.65);
+      --bg-card-hover: rgba(39, 39, 42, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-fire: rgba(249, 115, 22, 0.45);
+      --text-main: #fafafa;
+      --text-muted: #a1a1aa;
+      --fire-primary: #f97316;
+      --fire-secondary: #ef4444;
+      --fire-gold: #fbbf24;
+      --fire-gradient: linear-gradient(135deg, #fbbf24 0%, #f97316 45%, #dc2626 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Ambient Fire Glow Background */
+    .ambient-glow {
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.16) 0%, rgba(220, 38, 38, 0.08) 40%, rgba(9, 9, 11, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(40px);
+    }
+
+    /* Subtle Grid Overlay */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse at top, black 40%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse at top, black 40%, transparent 80%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    /* Navbar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .brand-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--fire-gradient);
+      box-shadow: 0 0 14px var(--fire-primary);
+    }
+
+    .btn-fire {
+      background: var(--fire-gradient);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
+    }
+
+    .btn-fire:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(249, 115, 22, 0.5);
+    }
+
+    .btn-fire:active {
+      transform: translateY(0);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 72px 0 56px;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(249, 115, 22, 0.1);
+      border: 1px solid rgba(249, 115, 22, 0.25);
+      color: #fdba74;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.75rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    .fire-text {
+      background: var(--fire-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.125rem;
+      line-height: 1.6;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* Section Header */
+    .section-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .site-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* Sites Grid */
+    .sites-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 20px;
+      margin-bottom: 80px;
+    }
+
+    .site-card {
+      position: relative;
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 175px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .site-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      padding: 1px;
+      background: var(--fire-gradient);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+
+    .site-card:hover {
+      transform: translateY(-4px);
+      background: var(--bg-card-hover);
+      box-shadow: 0 16px 36px -10px rgba(249, 115, 22, 0.22);
+    }
+
+    .site-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .card-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #fdba74;
+      background: rgba(249, 115, 22, 0.12);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .arrow-icon {
+      color: var(--text-muted);
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .site-card:hover .arrow-icon {
+      color: var(--fire-primary);
+      transform: translate(3px, -3px);
+    }
+
+    .delete-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      opacity: 0;
+      transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease;
+      z-index: 2;
+    }
+
+    .site-card:hover .delete-btn {
+      opacity: 1;
+    }
+
+    .delete-btn:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .card-body h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .card-body p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Add New Placeholder Card */
+    .add-slot-card {
+      background: rgba(24, 24, 27, 0.25);
+      border: 1.5px dashed rgba(255, 255, 255, 0.14);
+      border-radius: 18px;
+      min-height: 175px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.25s ease;
+    }
+
+    .add-slot-card:hover {
+      border-color: var(--fire-primary);
+      color: var(--text-main);
+      background: rgba(249, 115, 22, 0.05);
+    }
+
+    .plus-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    .add-slot-card:hover .plus-circle {
+      background: var(--fire-gradient);
+      color: #fff;
+    }
+
+    /* Modal Styles */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal {
+      background: #121215;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 440px;
+      padding: 28px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+      animation: popIn 0.2s ease-out;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .close-modal:hover {
+      color: var(--text-main);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #18181b;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-group input:focus {
+      border-color: var(--fire-primary);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-ghost:hover {
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 24px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+  <div class="bg-grid"></div>
+
+  <div class="container">
+    <header>
+      <a href="#" class="brand">
+        <span class="brand-dot"></span>
+        ELVIN
+      </a>
+      <button class="btn-fire" onclick="openModal()">
+        <span>+ Add Site</span>
+      </button>
+    </header>
+
+    <section class="hero">
+      <div class="badge">🔥 Command Center</div>
+      <h1>Welcome back, <span class="fire-text">Elvin.</span></h1>
+      <p>Your personal launchpad for projects, web apps, tools, and live deployments—all in one place.</p>
+    </section>
+
+    <main>
+      <div class="section-bar">
+        <h2 class="section-title">Featured & Saved Sites</h2>
+        <span class="site-count" id="siteCount">0 Sites</span>
+      </div>
+
+      <div class="sites-grid" id="sitesGrid">
+        <!-- Cards render dynamically here -->
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="container">
+      Built by Elvin &bull; <span id="year"></span>
+    </div>
+  </footer>
+
+  <!-- Add Site Modal -->
+  <div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOnBackdrop(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Add a New Site</h2>
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="addSiteForm" onsubmit="handleAddSite(event)">
+        <div class="form-group">
+          <label for="siteTitle">Site Name</label>
+          <input type="text" id="siteTitle" placeholder="e.g. Portfolio v2" required />
+        </div>
+        <div class="form-group">
+          <label for="siteUrl">URL</label>
+          <input type="url" id="siteUrl" placeholder="https://example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="siteTag">Category / Tag</label>
+          <input type="text" id="siteTag" placeholder="e.g. Web App, Tool, Blog" value="Project" />
+        </div>
+        <div class="form-group">
+          <label for="siteDesc">Short Description</label>
+          <input type="text" id="siteDesc" placeholder="What is this site about?" required />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn-fire">Save Site</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Set current year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Default starter sites (you can edit these directly in the array or delete them in the UI)
+    const defaultSites = [
+      {
+        id: 1,
+        title: "Main Portfolio",
+        url: "https://github.com",
+        tag: "Featured",
+        desc: "Showcasing creative builds, experiments, and full-stack projects."
+      },
+      {
+        id: 2,
+        title: "Project Slot 02",
+        url: "https://vercel.com",
+        tag: "Coming Soon",
+        desc: "Ready for your next web app, dashboard, or SaaS launch."
+      }
+    ];
+
+    // Load from localStorage or use defaults
+    let sites = JSON.parse(localStorage.getItem('elvin_sites')) || defaultSites;
+
+    const sitesGrid = document.getElementById('sitesGrid');
+    const siteCount = document.getElementById('siteCount');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+
+    function renderSites() {
+      sitesGrid.innerHTML = '';
+      siteCount.textContent = `${sites.length} ${sites.length === 1 ? 'Site' : 'Sites'}`;
+
+      sites.forEach(site => {
+        const card = document.createElement('a');
+        card.href = site.url;
+        card.target = '_blank';
+        card.rel = 'noopener noreferrer';
+        card.className = 'site-card';
+
+        card.innerHTML = `
+          <div class="card-top">
+            <span class="card-tag">${escapeHTML(site.tag || 'Site')}</span>
+            <div class="card-actions">
+              <button class="delete-btn" title="Remove site" onclick="removeSite(event, ${site.id})">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+              <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>${escapeHTML(site.title)}</h3>
+            <p>${escapeHTML(site.desc)}</p>
+          </div>
+        `;
+        sitesGrid.appendChild(card);
+      });
+
+      // Always append the "+ Add New Slot" card at the end
+      const addSlot = document.createElement('div');
+      addSlot.className = 'add-slot-card';
+      addSlot.onclick = openModal;
+      addSlot.innerHTML = `
+        <div class="plus-circle">+</div>
+        <span style="font-size: 0.9rem; font-weight: 500;">Add Another Site</span>
+      `;
+      sitesGrid.appendChild(addSlot);
+    }
+
+    function openModal() {
+      modalBackdrop.classList.add('active');
+      document.getElementById('siteTitle').focus();
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove('active');
+      document.getElementById('addSiteForm').reset();
+    }
+
+    function closeModalOnBackdrop(e) {
+      if (e.target === modalBackdrop) closeModal();
+    }
+
+    function handleAddSite(e) {
+      e.preventDefault();
+      const title = document.getElementById('siteTitle').value.trim();
+      const url = document.getElementById('siteUrl').value.trim();
+      const tag = document.getElementById('siteTag').value.trim() || 'Site';
+      const desc = document.getElementById('siteDesc').value.trim();
+
+      const newSite = {
+        id: Date.now(),
+        title,
+        url,
+        tag,
+        desc
+      };
+
+      sites.push(newSite);
+      saveAndRender();
+      closeModal();
+    }
+
+    function removeSite(e, id) {
+      e.preventDefault();
+      e.stopPropagation();
+      sites = sites.filter(site => site.id !== id);
+      saveAndRender();
+    }
+
+    function saveAndRender() {
+      localStorage.setItem('elvin_sites', JSON.stringify(sites));
+      renderSites();
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[tag]));
+    }
+
+    // Initial render
+    renderSites();
+  </script>
+</body>
+</html>
